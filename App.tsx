@@ -1,9 +1,22 @@
+import { useState } from 'react';
 import { StyleSheet, Text, View, StatusBar } from 'react-native';
 
 import { OptionCard } from './src/components/OptionCard';
 import question from './assets/data/oneQuestionWithOption';
 
+export type OptionType = {
+  id: string;
+  image: string;
+  text: string;
+};
+
 export default function App() {
+  const [selected, setSelected] = useState<OptionType>();
+
+  const selectedHandler = (option: OptionType) => {
+    setSelected(option);
+  };
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle='dark-content' />
@@ -12,9 +25,10 @@ export default function App() {
       <View style={styles.optionsContainer}>
         {question.options.map(option => (
           <OptionCard
-            image={option.image}
-            title={option.text}
+            {...option}
             key={option.id}
+            isSelected={selected?.id === option.id}
+            selectedHandler={() => selectedHandler(option)}
           />
         ))}
       </View>
