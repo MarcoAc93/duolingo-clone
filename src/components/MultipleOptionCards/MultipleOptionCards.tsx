@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Alert } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { OptionCard } from '../OptionCard';
 import { ConfirmationButton } from '../ConfirmationButton';

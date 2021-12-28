@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, StatusBar, Alert } from 'react-native';
+import { StyleSheet, View, StatusBar, Alert } from 'react-native';
 
-import { MultipleOptionCards } from './src/components/MultipleOptionCards';
-import questions from './assets/data/imageMulatipleChoiceQuestions';
+// import { MultipleOptionCards } from './src/components/MultipleOptionCards';
+// import questions from './assets/data/imageMulatipleChoiceQuestions';
+
+import { OpenEndedQuestion } from './src/components/OpenEndedQuestion';
+import questions from './assets/data/openEndedQuestions';
 
 export default function App() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -28,7 +31,12 @@ export default function App() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle='dark-content' />
-      <MultipleOptionCards
+      {/* <MultipleOptionCards
+        question={currentQuestion}
+        onCorrect={onCorrect}
+        onWrong={onWrong}
+      /> */}
+      <OpenEndedQuestion
         question={currentQuestion}
         onCorrect={onCorrect}
         onWrong={onWrong}
