@@ -13,11 +13,17 @@ export type OptionType = {
   correct?: boolean;
 };
 
+type Question = {
+  id: string;
+  type: string;
+  options?: OptionType[];
+  question?: string;
+  text?: string;
+  answer?: string;
+};
+
 interface MultipleOptionCardsProps {
-  question: {
-    question: string;
-    options: OptionType[];
-  };
+  question: Question;
   onCorrect: () => void;
   onWrong: () => void;
 };
