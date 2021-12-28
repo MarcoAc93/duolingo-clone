@@ -1,29 +1,51 @@
-import { useState } from 'react';
-import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, StatusBar, Alert } from 'react-native';
 
 import { OptionCard } from './src/components/OptionCard';
-import question from './assets/data/oneQuestionWithOption';
+import { ConfirmationButton } from './src/components/ConfirmationButton';
+import questions from './assets/data/imageMulatipleChoiceQuestions';
 
 export type OptionType = {
   id: string;
   image: string;
   text: string;
+  correct?: boolean;
 };
 
 export default function App() {
   const [selected, setSelected] = useState<OptionType>();
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(questions[0]);
 
   const selectedHandler = (option: OptionType) => {
     setSelected(option);
   };
 
+  const checkHandler = () => {
+    if (selected.correct) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelected(null);
+    } else {
+      Alert.alert('Wrong!');
+    }
+  };
+  
+  useEffect(() => {
+    if (currentQuestionIndex >= questions.length) {
+      Alert.alert('You won!');
+      setCurrentQuestionIndex(0);
+    } else {
+      setCurrentQuestion(questions[currentQuestionIndex]);
+    }
+  }, [currentQuestionIndex]);
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle='dark-content' />
-      <Text style={styles.title}>{question.question}</Text>
+      <Text style={styles.title}>{currentQuestion.question}</Text>
 
       <View style={styles.optionsContainer}>
-        {question.options.map(option => (
+        {currentQuestion.options.map(option => (
           <OptionCard
             {...option}
             key={option.id}
@@ -32,6 +54,12 @@ export default function App() {
           />
         ))}
       </View>
+
+      <ConfirmationButton
+        text="Check"
+        onPress={() => checkHandler()}
+        disabled={!selected}
+      />
     </View>
   );
 };
