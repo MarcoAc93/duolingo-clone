@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, StatusBar, Alert } from 'react-native';
+import { StyleSheet, View, StatusBar, Alert, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Header } from './src/components/Header';
 import { MultipleOptionCards } from './src/components/MultipleOptionCards';
@@ -11,15 +12,25 @@ export default function App() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(questions[0]);
   const [lives, setLives] = useState(5);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    loadData();
+  }, []);
   
   useEffect(() => {
     if (currentQuestionIndex >= questions.length) {
       Alert.alert('You won!');
       setCurrentQuestionIndex(0);
+      setLives(5);
     } else {
       setCurrentQuestion(questions[currentQuestionIndex]);
     }
   }, [currentQuestionIndex]);
+
+  useEffect(() => {
+    saveData();
+  }, [lives, currentQuestionIndex]);
 
   const onCorrect = () => {
     setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -28,7 +39,7 @@ export default function App() {
   const restartGame = () => {
     setLives(5);
     setCurrentQuestionIndex(0);
-  }
+  };
 
   const onWrong = () => {
     if (lives <= 1) {
@@ -42,6 +53,28 @@ export default function App() {
       setLives(lives - 1)
     }
   };
+
+  const saveData = async () => {
+    await AsyncStorage.setItem('lives', String(lives));
+    await AsyncStorage.setItem('currentQuestionIndex', String(currentQuestionIndex));
+  };
+
+  const loadData = async () => {
+    const loadedLives = await AsyncStorage.getItem('lives');
+    const questionIndex = await AsyncStorage.getItem('currentQuestionIndex');
+    if (loadedLives) {
+      setLives(Number(loadedLives));
+    }
+
+    if (questionIndex) {
+      setCurrentQuestionIndex(Number(questionIndex));
+    };
+    setIsLoading(false);
+  };
+
+  if (isLoading) {
+    return <ActivityIndicator size={50} />
+  }
 
   return (
     <View style={styles.root}>
